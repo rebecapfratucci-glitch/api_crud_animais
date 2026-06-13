@@ -3,6 +3,7 @@
 from fastapi import FastAPI
 from fastapi import Depends
 from fastapi import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
 
@@ -20,6 +21,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# ==========================================
+# CORS
+# ==========================================
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite qualquer origem
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite GET, POST, PUT, DELETE, OPTIONS, etc.
+    allow_headers=["*"]   # Permite todos os headers
+)
+
 
 def get_db():
 
@@ -30,6 +43,16 @@ def get_db():
 
     finally:
         db.close()
+
+
+@app.get("/")
+def home():
+
+    return {
+        "nome": "API Cadastro de Animais",
+        "versao": "1.0.0",
+        "docs": "/docs"
+    }
 
 
 @app.post(
